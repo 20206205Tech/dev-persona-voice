@@ -1,0 +1,36 @@
+name: dev-persona-voice
+
+on:
+  workflow_dispatch:
+
+
+jobs:
+  dev-persona-voice:
+    runs-on: ubuntu-latest
+
+
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: ".python-version"
+
+      - name: Install dependencies
+        run: uv sync
+
+      - name: Install Doppler CLI
+        uses: dopplerhq/cli-action@v3
+
+      - name: dev-persona-voice
+        env:
+          DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
+        run: doppler run --project 20206205tech --config prod -- uv run python main_upload.py
