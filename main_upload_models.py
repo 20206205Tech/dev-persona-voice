@@ -14,9 +14,7 @@ R2_ACCESS_KEY_ID = env.R2_ACCESS_KEY_ID
 R2_SECRET_ACCESS_KEY = env.R2_SECRET_ACCESS_KEY
 
 # Tự động chọn Bucket dựa trên ENVIRONMENT
-BUCKET_NAME = (
-    "dev-voice-models" if env.ENVIRONMENT == "development" else "prod-voice-models"
-)
+BUCKET_NAME = "dev-persona" if env.ENVIRONMENT == "development" else "prod-persona"
 
 
 class R2ModelUploader:

@@ -33,4 +33,19 @@ jobs:
       - name: dev-persona-voice
         env:
           DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
-        run: doppler run --project 20206205tech --config prod -- uv run python main_upload.py
+        run: doppler run --project 20206205tech --config dev -- uv run python main_upload_models.py
+
+      - name: dev-persona-voice
+        env:
+          DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
+        run: doppler run --project 20206205tech --config prod -- uv run python main_upload_models.py
+
+      - name: dev-persona-voice
+        env:
+          DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
+        run: doppler run --project 20206205tech --config dev -- uv run python main_upload_avatars.py
+
+      - name: dev-persona-voice
+        env:
+          DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
+        run: doppler run --project 20206205tech --config prod -- uv run python main_upload_avatars.py
