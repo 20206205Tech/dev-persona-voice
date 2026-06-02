@@ -1,0 +1,18 @@
+[project]
+name = "dev-persona-voice"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "boto3>=1.43.19",
+    "environs>=15.0.1",
+    "loguru>=0.7.3",
+    "piper-tts>=1.4.2",
+    "requests>=2.34.2",
+]
+
+[dependency-groups]
+dev = [
+    "pre-commit>=4.6.0",
+]
