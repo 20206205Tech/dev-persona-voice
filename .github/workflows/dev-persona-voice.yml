@@ -1,14 +1,16 @@
 name: dev-persona-voice
 
 on:
-  workflow_dispatch:
-
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
-  dev-persona-voice:
+  deploy-persona-voice:
     runs-on: ubuntu-latest
-
-
 
     steps:
       - name: Checkout repository
@@ -30,7 +32,27 @@ jobs:
       - name: Install Doppler CLI
         uses: dopplerhq/cli-action@v3
 
-      - name: dev-persona-voice
+      # Bước xác định môi trường (dev hoặc prod) dựa trên sự kiện trigger
+      - name: Determine Doppler Config
+        id: set-env
+        run: |
+          if [ "${{ github.event_name }}" == "pull_request" ]; then
+            echo "DOPPLER_CONFIG=dev" >> $GITHUB_ENV
+          else
+            echo "DOPPLER_CONFIG=prod" >> $GITHUB_ENV
+          fi
+
+      - name: Upload Models
         env:
           DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
-        run: doppler run --project 20206205tech --config prod -- uv run python main_upload.py
+        run: doppler run --project 20206205tech --config ${{ env.DOPPLER_CONFIG }} -- uv run python main_upload_models.py
+
+      - name: Upload Avatars
+        env:
+          DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
+        run: doppler run --project 20206205tech --config ${{ env.DOPPLER_CONFIG }} -- uv run python main_upload_avatars.py
+
+      - name: Upload Edge TTS
+        env:
+          DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
+        run: doppler run --project 20206205tech --config ${{ env.DOPPLER_CONFIG }} -- uv run python main_upload_edge_tts.py
