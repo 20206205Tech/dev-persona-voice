@@ -47,7 +47,7 @@ def main():
         
         if first_part == "avatars":
             tag = "avatar-sync-script"
-        elif first_part == "edge_tts":
+        elif first_part in ["edge_tts", "edge_tts_avatars"]:
             tag = "edge-tts-sync-script"
         elif first_part == "models":
             tag = "model-sync-script"
