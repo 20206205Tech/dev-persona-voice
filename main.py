@@ -42,17 +42,9 @@ def main():
 
         file_key = relative_path.as_posix()
         
-        # Xác định metadata tag dựa trên thư mục con đầu tiên của relative_path
+        # Xác định metadata tag bằng chính tên thư mục con đầu tiên để dễ hiểu
         first_part = relative_path.parts[0] if relative_path.parts else ""
-        
-        if first_part == "avatars":
-            tag = "avatar-sync-script"
-        elif first_part in ["edge_tts", "edge_tts_avatars"]:
-            tag = "edge-tts-sync-script"
-        elif first_part == "models":
-            tag = "model-sync-script"
-        else:
-            tag = f"{first_part}-sync-script" if first_part else "data-sync-script"
+        tag = first_part if first_part else "data"
 
         uploader = get_uploader(tag)
         
