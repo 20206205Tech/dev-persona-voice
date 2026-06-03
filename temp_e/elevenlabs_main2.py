@@ -11,7 +11,6 @@
 
 # # Danh sách các voice_id bạn muốn chạy
 # voice_ids = [
-    
 
 
 #         "CwhRBWXzGAHq8TQ4Fs17",
@@ -31,7 +30,7 @@
 #     "hpp4J3VqNfWAUOO0d1Us",
 
 #     "pNInz6obpgDQGcFmaJgB",
- 
+
 # ]
 
 # # Nội dung cần chuyển thành giọng nói

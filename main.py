@@ -1,11 +1,13 @@
 from pathlib import Path
+
 from loguru import logger
+
 from r2_uploader import R2Uploader
-import env
+
 
 def main():
     logger.info("🚀 BẮT ĐẦU ĐỒNG BỘ TOÀN BỘ DỮ LIỆU TRONG /data")
-    
+
     data_dir = Path("data")
     if not data_dir.exists() or not data_dir.is_dir():
         logger.error("Không tìm thấy thư mục 'data'. Vui lòng kiểm tra lại đường dẫn.")
@@ -13,7 +15,7 @@ def main():
 
     # Quét đệ quy tất cả các file trong thư mục data
     all_files = [f for f in data_dir.rglob("*") if f.is_file()]
-    
+
     if not all_files:
         logger.warning("Thư mục 'data' trống hoặc không có file nào để upload.")
         return
@@ -22,7 +24,7 @@ def main():
 
     # Cache các uploader để tránh khởi tạo lại kết nối nhiều lần
     uploaders = {}
-    
+
     def get_uploader(tag: str) -> R2Uploader:
         if tag not in uploaders:
             uploaders[tag] = R2Uploader(metadata_tag=tag)
@@ -41,13 +43,13 @@ def main():
             continue
 
         file_key = relative_path.as_posix()
-        
+
         # Xác định metadata tag bằng chính tên thư mục con đầu tiên để dễ hiểu
         first_part = relative_path.parts[0] if relative_path.parts else ""
         tag = first_part if first_part else "data"
 
         uploader = get_uploader(tag)
-        
+
         if uploader.upload_file(file_path, file_key=file_key):
             success_count += 1
         else:
@@ -59,5 +61,6 @@ def main():
     )
     logger.info("=" * 40)
 
+
 if __name__ == "__main__":
-    main()
+    main()

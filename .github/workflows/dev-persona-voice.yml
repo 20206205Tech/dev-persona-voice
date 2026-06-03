@@ -46,4 +46,3 @@ jobs:
         env:
           DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
         run: doppler run --project 20206205tech --config ${{ env.DOPPLER_CONFIG }} -- uv run python main.py
-
