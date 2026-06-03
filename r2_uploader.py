@@ -62,9 +62,10 @@ class R2Uploader:
             logger.error(f"Lỗi khi kiểm tra tồn tại của {file_key}: {e}")
             return False
 
-    def upload_file(self, file_path: Path) -> bool:
+    def upload_file(self, file_path: Path, file_key: str = None) -> bool:
         """Upload một file vật lý lên R2 (bỏ qua nếu đã có)"""
-        file_key = file_path.as_posix()
+        if file_key is None:
+            file_key = file_path.as_posix()
 
         # 1. KIỂM TRA TỒN TẠI
         if self.file_exists(file_key):

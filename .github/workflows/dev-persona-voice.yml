@@ -42,17 +42,8 @@ jobs:
             echo "DOPPLER_CONFIG=prod" >> $GITHUB_ENV
           fi
 
-      - name: sync_media
+      - name: main
         env:
           DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
-        run: doppler run --project 20206205tech --config ${{ env.DOPPLER_CONFIG }} -- uv run python sync_media.py
+        run: doppler run --project 20206205tech --config ${{ env.DOPPLER_CONFIG }} -- uv run python main.py
 
-      - name: sync_models
-        env:
-          DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
-        run: doppler run --project 20206205tech --config ${{ env.DOPPLER_CONFIG }} -- uv run python sync_models.py
-
-      # - name: Upload Edge TTS
-      #   env:
-      #     DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
-      #   run: doppler run --project 20206205tech --config ${{ env.DOPPLER_CONFIG }} -- uv run python main_upload_edge_tts.py
