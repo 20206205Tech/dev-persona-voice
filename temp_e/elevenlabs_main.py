@@ -28,24 +28,42 @@ def main():
     # Khởi tạo client ElevenLabs
     client = ElevenLabs(api_key=api_key)
 
-    # Khởi tạo thư mục lưu file audio (sử dụng PATH_FOLDER_DATA từ elevenlabs_env)
-    output_dir = Path(elevenlabs_env.PATH_FOLDER_DATA) / "greeting_audio"
+    # Khởi tạo thư mục lưu file audio (sử dụng data/audio ở thư mục gốc của project)
+    output_dir = Path(elevenlabs_env.PATH_FOLDER_PROJECT).parent / "data" / "audio"
     output_dir.mkdir(parents=True, exist_ok=True)
+
+    # Map engine_id -> DataEngine
+    engine_map = {e.id: e for e in elevenlabs_data.SAMPLE_ENGINE_DATA}
+    # Map voice_uuid -> DataVoice
+    voice_map = {v.voice_uuid: v for v in elevenlabs_data.SAMPLE_VOICE_DATA}
 
     print(f"Bắt đầu tạo audio. Thư mục lưu: {output_dir}\n" + "-" * 40)
 
     # Xử lý từng persona trong dữ liệu mẫu
     for persona in elevenlabs_data.SAMPLE_PERSONA_DATA:
-        print(f"Đang xử lý Persona: [{persona.name}] - Voice ID: {persona.voice_id}")
-
-        # 1. Nếu là edge_tts thì tạm thời bỏ qua
-        if persona.tts_engine == "edge_tts":
-            print(f" ⏭️ Bỏ qua (Engine: {persona.tts_engine})\n")
+        voice = voice_map.get(persona.voice_uuid)
+        if not voice:
+            print(f"❌ LỖI: Không tìm thấy voice cho persona '{persona.name}'.\n")
             continue
 
-        # 2. Nếu là elevenlabs thì tạo file audio với voice_id
-        if persona.tts_engine == "elevenlabs":
-            file_name = output_dir / f"{persona.voice_id}.mp3"
+        engine = engine_map.get(voice.engine_id)
+        if not engine:
+            print(f"❌ LỖI: Không tìm thấy engine cho voice '{voice.voice_code}'.\n")
+            continue
+
+        voice_code = voice.voice_code
+        tts_engine = engine.code
+
+        print(f"Đang xử lý Persona: [{persona.name}] - Voice ID: {voice_code}")
+
+        # 1. Nếu là edge_tts hoặc piper_tts thì tạm thời bỏ qua
+        if tts_engine in ("edge_tts", "piper_tts"):
+            print(f" ⏭️ Bỏ qua (Engine: {tts_engine})\n")
+            continue
+
+        # 2. Nếu là elevenlabs thì tạo file audio với voice_code
+        if tts_engine == "elevenlabs":
+            file_name = output_dir / f"{voice_code}.mp3"
 
             # Kiểm tra xem file đã được tạo chưa để tránh gọi API trùng lặp gây tốn credit
             if file_name.exists():
@@ -57,7 +75,7 @@ def main():
                 # Gọi API chuyển văn bản thành giọng nói
                 audio_generator = client.text_to_speech.convert(
                     text=persona.greeting_text,
-                    voice_id=persona.voice_id,
+                    voice_id=voice_code,
                     language_code="vi",
                     model_id="eleven_turbo_v2_5",
                 )
@@ -74,7 +92,7 @@ def main():
                 time.sleep(1.5)
 
             except Exception as e:
-                print(f" ❌ Lỗi khi xử lý {persona.name} ({persona.voice_id}): {e}\n")
+                print(f" ❌ Lỗi khi xử lý {persona.name} ({voice_code}): {e}\n")
 
     print("-" * 40 + "\n🎉 Hoàn thành tất cả các thao tác!")
 
